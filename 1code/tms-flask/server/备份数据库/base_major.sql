@@ -1,0 +1,3 @@
+INSERT INTO `base_major` (`id`, `code`, `name`, `english_name`, `short_name`, `education_system`, `direction`, `found_date`, `teacher_ids`) VALUES (1, '1001', '计算机', 'computer', '计算机', '五年制', '计算机', NULL, NULL);
+INSERT INTO `base_major` (`id`, `code`, `name`, `english_name`, `short_name`, `education_system`, `direction`, `found_date`, `teacher_ids`) VALUES (2, '1002', '电子商务', NULL, NULL, '五年制', NULL, NULL, NULL);
+INSERT INTO `base_major` (`id`, `code`, `name`, `english_name`, `short_name`, `education_system`, `direction`, `found_date`, `teacher_ids`) VALUES (3, '1003', '会计', NULL, NULL, '五年制', '金融方向', NULL, NULL);

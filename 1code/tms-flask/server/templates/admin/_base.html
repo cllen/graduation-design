@@ -1,0 +1,15 @@
+{% extends 'admin/base.html' %}
+
+{% block access_control %}
+{% if current_view.current_user %}
+<div class="dropdown show">
+  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="icon-user"></i> {{ current_view.current_user.username }} <span class="caret"></span>
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="btn" href="{{ current_view.current_app.urls['logout_url'] }}">退出登录</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

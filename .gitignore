@@ -1,0 +1,13 @@
+*.pyc
+1code/oauth2-flask/venv
+1code/tms-flask/venv
+
+process_monitor_*.csv
+
+*.sqlite
+
+1code/tms-flask/server/tmp/*
+1code/oauth2-flask/server/tmp/*
+
+1code/config.conf
+0docs/6.示例.md

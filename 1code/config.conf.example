@@ -1,0 +1,55 @@
+# =================== 1. 运行环境配置 =========================
+
+# [mode]
+# 1. 这一项是决定用户使用的环境:production(生产环境)、development(开发环境)。
+# 2. 如果用于查看项目效果，只需要填写development，这一项比较方便。
+# 3. 如果用于上线使用，请填写production。
+
+config_name=development # production,development 
+
+# =================== 2. 数据库配置 =========================
+
+# [db]
+# 1. 如果使用了开发环境development，则下面的数据库不需要填写。
+
+db_host=xxx
+db_port=3306
+db_username=xxx
+db_password=xxx
+
+# =================== 3. 服务配置 =========================
+
+# [service]
+# 1. 请将下面的“your-server-ip”改为你的服务器的外网ip。
+
+oauth2_domain=http://your-server-ip:5001
+tms_domain=http://your-server-ip:5000
+
+# =================== 4. 业务配置 =========================
+
+# [oauth2]
+oauth2_name=xxx职业技术学校统一登录系统
+oauth2_admin_username=admin
+oauth2_admin_password=admin
+
+# [tms]
+tms_name=xxx职业技术学校教学管理系统
+client_id=1
+client_secret=xxx
+client_name=xxx
+tms_teacher_account=20203712168
+tms_teacher_password=123
+tms_teacher_name=黄旭辉
+tms_student_account=20203712062
+tms_student_password=123
+tms_student_name=陈锡
+
+# =================== 5. gunicorn配置（不建议修改） =========================
+
+# [gunicorn]
+# gunicorn绑定ip和port，如果使用nginx动态代理，可以填写为127.0.0.1，否则0.0.0.0
+# 如果不做反向代理，这里的端口要和上面的[service]一致。
+gunicorn_oauth2_ip=0.0.0.0
+gunicorn_tms_ip=0.0.0.0
+gunicorn_oauth2_port=5001
+gunicorn_tms_port=5000

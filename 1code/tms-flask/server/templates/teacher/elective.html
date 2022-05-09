@@ -1,0 +1,191 @@
+{% extends "home/base.html" %}
+{% import "home/_macros.html" as macros %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+
+{% block title %}教师审核选课页面{% endblock %}
+
+{% block page_content %}
+
+{% if not current_user %}
+	您未登录，请<a href="{{ current_app.urls.login_url }}">使用第三方登录</a>
+	
+{% else %}
+
+
+
+<table class="table table-hover">
+  <caption>教师审核选课</caption>
+  <thead>
+    <tr>
+      <th>选课id</th>
+      <th>学生姓名</th>
+      <th>学生学号</th>
+      <th>学生班级</th>
+      <th>学生年级</th>
+      <th>学生专业</th>
+      <th>课程</th>
+      <th>是否代选</th>
+      <th>选课状态</th>
+      <th>排课计划人数</th>
+      <th>排课已选人数</th>
+      <th>排课通过人数</th>
+<!--       <th>排课限定专业</th>
+      <th>排课限定年级</th>
+      <th>排课限定班级</th>
+      <th>排课上课时间</th>
+      <th>排课学分</th> -->
+      <th> - </th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for p in items %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.student.username }}</td>
+      <td>{{ p.student.account }}</td>
+      <td>{{ p.student._class.name }}</td>
+      <td>{{ p.student._class.grade.name }}</td>
+      <td>{{ p.student._class.major.name }}</td>
+      <td>{{ p.plan_course_scheduling.plan_course.base_curriculum.name }}</td>
+      <td>{{ "是" if p.is_agent_selected else "否" }}</td>
+      <td id="auditive_status_{{ p.id }}">{{ p.auditive_status }}</td>
+      <td>{{ p.plan_course_scheduling.expected_members }}</td>
+      <td>{{ p.plan_course_scheduling.actual_members }}</td>
+      <td>{{ p.plan_course_scheduling.approved_members }}</td>
+
+
+
+<!--       <td>
+        {% if not p.plan_course_scheduling.for_base_major_ids %}
+          -
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_base_major_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.plan_course_scheduling.for_grade_grade_ids %}
+          -
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_grade_grade_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.plan_course_scheduling.for_grade_class_ids %}
+          -
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_grade_class_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+
+      <th>
+        {% for i in p.plan_course_scheduling.teaching_datetimes_simple %}
+          {{ i }}<br/>
+        {% endfor %}
+      </th>
+
+      <th>
+        {{ p.plan_course_scheduling.plan_course.base_curriculum.credits }}
+      </th> -->
+
+      <td>
+        <button id="selected_btn_{{ p.id }}" type="button" class="btn btn-warning" onclick=elective_api({{ p.id }},'待审核'); style="display:{{ 'none' if p.auditive_status == '待审核' else 'block' }}">待审核</button>
+          
+
+        <button id="approved_btn_{{ p.id }}" type="button" class="btn btn-success" onclick=elective_api({{ p.id }},'通过'); style="display:{{ 'none' if p.auditive_status == '通过' else 'block' }}">通过</button>
+
+        <button id="rejected_btn_{{ p.id }}" type="button" class="btn btn-danger" onclick=elective_api({{ p.id }},'驳回'); style="display:{{ 'none' if p.auditive_status == '驳回' else 'block' }}">驳回</button>
+
+
+      </td>
+      <!-- <td>{{ p.start_week }}</td>
+      <td>{{ p.end_week }}</td> -->
+      <!-- <td>{{ p.teaching_datetimes }}</td> -->
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+<!-- 分页器 -->
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.teacher-elective') }}
+</div>
+{% endif %}
+
+
+
+<!-- js -->
+<script type="text/javascript">
+
+  function elective_api(elective_id,auditive_status){
+    $.ajax({
+      
+      type: "POST",
+
+      url: '{{ current_app.urls.teacher_elective_api }}',
+
+      // 声明request的类型
+      contentType: "application/json; charset=UTF-8",
+
+      // 预期response的类型
+      dataType: "json",
+
+      // data
+      data:JSON.stringify({
+        elective_id:elective_id,
+        auditive_status:auditive_status
+      }),
+
+      traditional: false,
+      // 是否异步请求
+      async: true,
+      // 允许请求携带cookie
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function (data) {
+        // 修改颜色按钮
+        if(data.error_code==0){
+          $("#selected_btn_"+elective_id).css('display',auditive_status=='待审核'?'none':'block');
+          $("#approved_btn_"+elective_id).css('display',auditive_status=='通过'?'none':'block');
+          $("#rejected_btn_"+elective_id).css('display',auditive_status=='驳回'?'none':'block');
+
+          // .text() .html() 都可以
+          $("#auditive_status_"+elective_id).text(data['entry']['auditive_status'])
+        }
+        alert("操作信息："+data.error_message+"\n操作代码："+data.error_code);
+        console.log(data)
+      }.bind(this),
+      error: function (data) {
+        data = data.responseJSON
+        alert( "错误信息："+data.error_message + "\n错误代码：" + data.error_code
+        console.log(data)
+      }.bind(this)
+    });
+  }
+
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+
+
+

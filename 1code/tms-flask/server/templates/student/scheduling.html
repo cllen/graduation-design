@@ -1,0 +1,233 @@
+{% extends "home/base.html" %}
+{% import "home/_macros.html" as macros %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+
+{% block title %}选课页面{% endblock %}
+
+{% block page_content %}
+
+{% if not current_user %}
+	您未登录，请<a href="{{ urls.login_url }}">使用第三方登录</a>
+	
+{% else %}
+
+
+
+<table class="table table-hover">
+  <caption>选课页面</caption>
+  <thead>
+    <tr>
+      <th>课程</th>
+      <th>校区</th>
+      <th>学期</th>
+      <th>教师</th>
+      <th>教室</th>
+      <th>计划人数</th>
+      <th>已选人数</th>
+      <th>限定专业</th>
+      <th>限定年级</th>
+      <th>限定班级</th>
+      <!-- <th>起始周</th>
+      <th>终止周</th> -->
+      <th>上课时间</th>
+      <th>学分</th>
+      <th> - </th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for p in items %}
+    <tr>
+      <td>{{ p.plan_course.base_curriculum.name }}</td>
+      <td>{{ p.campus }}</td>
+      <td>{{ p.base_term.name }}</td>
+      <td>{{ p.teacher.username }}</td>
+      <td>{{ p.teaching_place }}</td>
+      <td>{{ p.expected_members }}</td>
+      <td>{{ p.actual_members }}</td>
+
+      <td>
+        {% if not p.for_base_major_ids %}
+          -
+        {% endif %}
+        {% for i in p.for_base_major_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.for_grade_grade_ids %}
+          -
+        {% endif %}
+        {% for i in p.for_grade_grade_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.for_grade_class_ids %}
+          -
+        {% endif %}
+        {% for i in p.for_grade_class_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+
+      <th>
+        {% for i in p.teaching_datetimes_simple %}
+          {{ i }}<br/>
+        {% endfor %}
+      </th>
+
+      <th>
+        {{ p.plan_course.base_curriculum.credits }}
+      </th>
+
+      <td>
+        <button id="post_btn_{{ p.id }}" type="button" class="btn btn-success" onclick=add_elective({{ p.id }}); style="display:{{ 'block' if p.did_I_elect == False else 'none' }}">选课</button>
+          <button id="delete_btn_{{ p.id }}" type="button" class="btn btn-warning" onclick=delete_elective({{ p.id }}); style="display:{{ 'block' if p.did_I_elect == True else 'none' }}">退课</button>
+      </td>
+      <!-- <td>{{ p.start_week }}</td>
+      <td>{{ p.end_week }}</td> -->
+      <!-- <td>{{ p.teaching_datetimes }}</td> -->
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+<!-- 分页器 -->
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.student-scheduling') }}
+</div>
+{% endif %}
+
+
+
+<!-- js -->
+<script type="text/javascript">
+
+  function add_elective(scheduling_id){
+    $.ajax({
+      
+      type: "POST",
+
+      url: '{{ current_app.urls.student_elective_api }}',
+
+      // 声明request的类型
+      contentType: "application/json; charset=UTF-8",
+
+      // 预期response的类型
+      dataType: "json",
+
+      // data
+      data: JSON.stringify({
+        // scheduling_id:parseInt(scheduling_id)
+        scheduling_id:scheduling_id,
+        auditive_status:'{{ ElectiveStatus.selected }}',
+      }),
+      // data: {
+      //   'scheduling_id':scheduling_id
+      // },
+
+      /*
+        默认的话，traditional为false，即jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架，
+        但servelt api无法处理，我们可以通过设置traditional为true阻止深度序列化，然后序列化结果如下：
+      */
+      traditional: false,
+      // 是否异步请求
+      async: true,
+      // 允许请求携带cookie
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function (data) {
+        console.log(data)
+        // 修改颜色按钮
+        if(data.error_code==0){
+          $("#post_btn_"+scheduling_id).css('display','none');
+          $("#delete_btn_"+scheduling_id).css('display','block');
+        }
+        alert("操作信息："+data.error_message+"\n操作代码："+data.error_code);
+        
+      }.bind(this),
+      error: function (data) {
+        console.log('>> error')
+        console.log(data)
+        data = data.responseJSON
+        alert( "错误信息："+data.error_message + "\n错误代码：" + data.error_code);
+      }.bind(this)
+    });
+  }
+
+  function delete_elective(scheduling_id){
+    $.ajax({
+      
+      type: "DELETE",
+
+      url: '{{ current_app.urls.student_elective_api }}' + "?scheduling_id=" + scheduling_id,
+
+      // // 声明request的类型
+      // contentType: "application/json; charset=UTF-8",
+
+      // 预期response的类型
+      dataType: "json",
+
+      // // data
+      // data: JSON.stringify({
+      //   // scheduling_id:parseInt(scheduling_id)
+      //   scheduling_id:scheduling_id
+      // }),
+      // data: {
+      //   'scheduling_id':scheduling_id
+      // },
+
+      /*
+        默认的话，traditional为false，即jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架，
+        但servelt api无法处理，我们可以通过设置traditional为true阻止深度序列化，然后序列化结果如下：
+      */
+      traditional: false,
+      // 是否异步请求
+      async: true,
+      // 允许请求携带cookie
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function (data) {
+        // 修改颜色按钮
+        if(data.error_code==0){
+            $("#post_btn_"+scheduling_id).css('display','block');
+            $("#delete_btn_"+scheduling_id).css('display','none');
+        }
+        console.log(data)
+        alert("操作信息："+data.error_message+"\n操作代码："+data.error_code);
+        
+      }.bind(this),
+      error: function (data) {
+        console.log(data)
+        data = data.responseJSON
+        alert( "错误信息："+data.error_message + "\n错误代码：" + data.error_code);
+        
+      }.bind(this)
+    });
+  }
+
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+
+
+

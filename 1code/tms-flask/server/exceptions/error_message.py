@@ -1,0 +1,139 @@
+"""
+	1xxx cms
+		11xx login
+		12xx taskelective 
+"""
+
+error_messages = {
+
+	1001:{
+		'error_message':"未知错误！",
+		'http_code':500,
+	},
+	1002:{
+		'error_message':"用户未登录！",
+		'http_code':400,
+	},
+	1003:{
+		'error_message':"用户类型必须为{}！",
+		'http_code':400,
+	},
+	1004:{
+		'error_message':"参数错误!",
+		'http_code':400,
+	},
+	1005:{
+		'error_message':"登录失败！",
+		'http_code':400,
+	},
+	1006:{
+		'error_message':"session过期，请重新登录！（这是一个不应该出现的错误，如果出现，就代表逻辑出错，请检查login_required函数。）",
+		'http_code':400,
+	},
+	1101:{
+		'error_message':"参数错误！",
+		'http_code':400,
+	},
+	1102:{
+		'error_message':"未知错误！",
+		'http_code':400,
+	},
+	1103:{
+		'error_message':"统一认证服务器返回无法解析的html类型信息！",
+		'http_code':400,
+	},
+	1104:{
+		'error_message':"获取token时，统一认证服务器返回无法解析的json类型信息！",
+		'http_code':400,
+	},
+	1105:{
+		'error_message':"获取userinfo时，统一认证服务器返回无法解析的json类型信息！",
+		'http_code':400,
+	},
+	1106:{
+		'error_message':"获取token时，统一登录系统返回的error_code报错！",
+		'http_code':400,
+	},
+	1107:{
+		'error_message':"获取userinfo时，统一认证服务器返回无法解析成json的数据",
+		'http_code':500,
+	},
+	1108:{
+		'error_message':"获取userinfo时，统一认证错误码：error_code != 0",
+		'http_code':400,
+	},
+
+
+	# 选课错误
+	1201:{
+		'error_message':"有专业限制，无法选选择该课程！",
+		'http_code':400,
+	},
+	1202:{
+		'error_message':"有年级限制，无法选择该课程！",
+		'http_code':400,
+	},
+	1203:{
+		'error_message':"选课失败，人数已满！",
+		'http_code':200,
+	},
+	1204:{
+		'error_message':"你已经预选该课程，不能重复预选！",
+		'http_code':200,
+	},
+	1205:{
+		'error_message':"课程未设置计划人数，故不能选！",
+		'http_code':400,
+	},
+	1206:{
+		'error_message':"该课程上课时间与【{}】课冲突，故不能选！",
+		'http_code':200,
+	},
+	1207:{
+		'error_message':"不存在该排课！或你没有选该课程！",
+		'http_code':200,
+	},
+	1208:{
+		'error_message':"退课失败！",
+		'http_code':400,
+	},
+	1209:{
+		'error_message':"这是你的班级特定课程，不需要选课！",
+		'http_code':400,
+	},
+	1210:{
+		'error_message':"你还没加入任何班级，请联系学校老师！",
+		'http_code':400,
+	},
+	1211:{
+		'error_message':"没有这个排课！请联系管理人员！",
+		'http_code':400,
+	},
+	1212:{
+		'error_message':"你在这个课程已经被驳回！不需退课！",
+		'http_code':400,
+	},
+	1213:{
+		'error_message':"老师已经通过选课，故不能退课！",
+		'http_code':400,
+	},
+	1214:{
+		'error_message':"不存在该选课！",
+		'http_code':400,
+	},
+
+
+	# 学生课表页面
+	1301:{
+		'error_message':"你还没有加入班级！请联系班主任！",
+		'http_code':400,
+	},
+	1302:{
+		'error_message':"你的班还没有选学期！请联系班主任！",
+		'http_code':400,
+	},
+	1303:{
+		'error_message':"你的班还没有培养方案！请联系班主任！",
+		'http_code':400,
+	},
+}

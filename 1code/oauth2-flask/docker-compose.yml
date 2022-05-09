@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+
+    oauth2-flask:
+        container_name: oauth2-flask
+        command: gunicorn -w 4 -b 0.0.0.0:5000 -t 160 manage:app --log-level DEBUG
+        build: ./server
+        image: oauth2_server_flask
+        ports:
+            - "9527:5000"
+        volumes:
+            - ./server:/home/server
+
+        networks:
+            - public-container
+        environment:
+            - PYTHONUNBUFFERED=0
+        restart: always
+networks:
+  public-container:
+    external: true

@@ -1,0 +1,7 @@
+td:empty:before{ 
+    content: 'xxx'; 
+    color: gray; 
+} 
+td:focus:before{
+    content:none;
+}

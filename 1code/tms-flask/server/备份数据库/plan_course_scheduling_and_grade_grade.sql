@@ -1,0 +1,14 @@
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (1, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (2, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (4, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (5, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (6, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (7, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (8, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (9, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (10, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (11, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (13, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (14, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (15, 1);
+INSERT INTO `plan_course_scheduling_and_grade_grade` (`plan_course_scheduling_id`, `grade_grade_id`) VALUES (16, 1);

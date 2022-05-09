@@ -1,0 +1,25 @@
+{% extends "home/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block title %}课程管理系统{% endblock %}
+
+{% block page_content %}
+
+
+欢迎访问课程管理系统！
+
+{% if current_user %}
+	你好，{{ current_user.username }} {{ {"学生":"同学","教师":"老师","管理员":"管理员",}[current_user.type] }}! 欢迎登录{{ current_app.config['PROJECT_CHINESE_NAME ']}}！
+{% else %}
+	您未登录，请<a href="{{ current_app.urls['login_url'] }}">使用第三方登录</a>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+

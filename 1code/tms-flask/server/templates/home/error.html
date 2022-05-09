@@ -1,0 +1,29 @@
+{% extends "home/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block title %}发生了错误{% endblock %}
+
+{% block page_content %}
+
+<h1>出错了！</h1>
+
+<p>http状态码:{{ data.http_code }}</p>
+<p>错误代码:{{ data.error_code }}</p>
+<p>错误信息:{{ data.error_message }}</p>
+<p>错误详细信息:{{ data.error_detail }}</p>
+<p>错误详细数据:{{ data.error_detail2 }}</p>
+
+{% if data.error_html %}
+<p>统一登录服务器返回的错误页面:</p>
+<div style="border-style:solid; border-width:5px; border-color:#000">
+	{{ data.error_html | safe }}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}

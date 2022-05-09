@@ -1,0 +1,355 @@
+{% extends "home/base.html" %}
+{% import "home/_macros.html" as macros %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+
+{% block title %}我的课表{% endblock %}
+
+{% block page_content %}
+
+{% if not current_user %}
+	您未登录，请<a href="{{ urls.login_url }}">使用第三方登录</a>
+{% else %}
+
+
+<!-- 我的课表 -->
+<div class="table-responsive">
+<table class="table table-hover">
+  <caption>我的课表</caption>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>周一</th>
+      <th>周二</th>
+      <th>周三</th>
+      <th>周四</th>
+      <th>周五</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+
+    {% for _class in ['第一节','第二节','第三节','第四节','第五节','第六节',] %}
+
+      <tr>
+        <td>{{ _class }}</td>
+        {% for _day in ['周一','周二','周三','周四','周五',] %}
+          {% if my_scheduling[_class][_day] not in [0,'0',] %}
+            <td class="success">{{ my_scheduling[_class][_day] }}</td>
+          {% else %}
+            <td>-</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+
+<!-- 必修课 -->
+<table class="table table-hover">
+  <caption>必修课</caption>
+  <thead>
+    <tr>
+      <th>课程</th>
+      <th>校区</th>
+      <th>学期</th>
+      <th>教师</th>
+      <th>教室</th>
+      <th>计划人数</th>
+      <th>已选人数</th>
+      <th>限定专业</th>
+      <th>限定年级</th>
+      <th>限定班级</th>
+      <!-- <th>起始周</th>
+      <th>终止周</th> -->
+      <th>上课时间</th>
+      <th>学分</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  	{% for p in required_scheduling_ids %}
+    <tr>
+      <td>{{ p.plan_course.base_curriculum.name }}</td>
+      <td>{{ p.campus }}</td>
+      <td>{{ p.base_term.name }}</td>
+      <td>{{ p.teacher.username }}</td>
+      <td>{{ p.teaching_place }}</td>
+      <td>{{ p.expected_members or "无" }}</td>
+      <td>{{ p.actual_members }}</td>
+
+      <td>
+        {% if not p.for_base_major_ids %}
+        无
+        {% endif %}
+        {% for i in p.for_base_major_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.for_grade_grade_ids %}
+        无
+        {% endif %}
+        {% for i in p.for_grade_grade_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.for_grade_class_ids %}
+        无
+        {% endif %}
+        {% for i in p.for_grade_class_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+
+      <th>
+        {% for i in p.teaching_datetimes_simple %}
+          {{ i }}<br/>
+        {% endfor %}
+      </th>
+
+      <th>
+        {{ p.plan_course.base_curriculum.credits }}
+      </th>
+
+      
+
+      <!-- <td>
+        <button id="post_btn_{{ p.id }}" type="button" class="btn btn-success" onclick=add_elective({{ p.id }}); style="display:{{ 'block' if p.did_I_elect == False else 'none' }}">选课</button>
+          <button id="delete_btn_{{ p.id }}" type="button" class="btn btn-warning" onclick=delete_elective({{ p.id }}); style="display:{{ 'block' if p.did_I_elect == True else 'none' }}">退课</button>
+      </td> -->
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+<table class="table table-hover">
+  <caption>选修课</caption>
+  <thead>
+    <tr>
+      <th>课程</th>
+      <th>校区</th>
+      <th>学期</th>
+      <th>教师</th>
+      <th>教室</th>
+      <th>计划人数</th>
+      <th>已选人数</th>
+      <th>限定专业</th>
+      <th>限定年级</th>
+      <th>限定班级</th>
+      <!-- <th>起始周</th>
+      <th>终止周</th> -->
+      <th>上课时间</th>
+      <th>学分</th>
+      <th>状态</th>
+      <th> 操作 </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in elective_ids %}
+    <tr>
+      <td>{{ p.plan_course_scheduling.plan_course.base_curriculum.name }}</td>
+      <td>{{ p.plan_course_scheduling.campus }}</td>
+      <td>{{ p.plan_course_scheduling.base_term.name }}</td>
+      <td>{{ p.plan_course_scheduling.teacher.username }}</td>
+      <td>{{ p.plan_course_scheduling.teaching_place }}</td>
+      <td>{{ p.plan_course_scheduling.expected_members }}</td>
+      <td>{{ p.plan_course_scheduling.actual_members }}</td>
+
+      <td>
+        {% if not p.plan_course_scheduling.for_base_major_ids %}
+        无
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_base_major_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.plan_course_scheduling.for_grade_grade_ids %}
+        无
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_grade_grade_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+      <td>
+        {% if not p.plan_course_scheduling.for_grade_class_ids %}
+        无
+        {% endif %}
+        {% for i in p.plan_course_scheduling.for_grade_class_ids %}
+          {{ i.name }}<br/>
+        {% endfor %}
+      </td>
+
+      <th>
+        {% for i in p.plan_course_scheduling.teaching_datetimes_simple %}
+          {{ i }}<br/>
+        {% endfor %}
+      </th>
+
+      <th>
+        {{ p.plan_course_scheduling.plan_course.base_curriculum.credits }}
+      </th>
+
+      <th>
+        {{ p.auditive_status }}
+      </th>
+
+
+      <td>
+        <!-- <button id="post_btn_{{ p.id }}" type="button" class="btn btn-success" onclick=add_elective({{ p.id }}); style="display:{{ 'block' if p.auditive_status == '{{ ElectiveStatus.selected }}' else 'none' }}">选课</button> -->
+          <button id="delete_btn_{{ p.id }}" type="button" class="btn btn-warning" onclick=delete_elective({{ p.plan_course_scheduling.id }}); style="display:{{ 'block' if p.auditive_status == ElectiveStatus.selected else 'none' }}">退课</button>
+      </td>
+      <!-- <td>{{ p.start_week }}</td>
+      <td>{{ p.end_week }}</td> -->
+      <!-- <td>{{ p.teaching_datetimes }}</td> -->
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 学分要求 -->
+
+<table class="table table-hover">
+  <caption>要求学分与参考课程</caption>
+  <thead>
+    <tr>
+      <th>项</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td>本学期要求学分</td>
+      <td>{{ current_term_situation.required_credit }}</td>
+    </tr>
+    <tr>
+      <td>本学期在修学分</td>
+      {% if current_term_situation.required_credit > my_this_term_credit %}
+        <td class="danger">{{ my_this_term_credit }}（本学期未修满！欠{{ current_term_situation.required_credit-my_this_term_credit }}分！请继续选课！）</td>
+      {% else %}
+        <td class="success">{{ my_this_term_credit }}（本学期已修满！请加油！）</td>
+      {% endif %}
+    </tr>
+
+    {% for commend_course in current_term_situation.commend_course_ids %}
+    <tr>
+      <!-- 按课程类型分类 -->
+      <td>{{ commend_course[0] }}（参考）</td>
+
+      <!-- 课程信息 -->
+      <td>
+          {% for course_info in commend_course[1] %}
+          &nbsp; {{ course_info["课程名"] }} &nbsp;
+          {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+<!-- 分页器
+{% if elective_scheduling_pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(elective_scheduling_pagination, '.student-elective') }}
+</div>
+{% endif %}
+ -->
+
+
+<!-- js -->
+<script type="text/javascript">
+
+
+    function delete_elective(scheduling_id){
+    $.ajax({
+      
+      type: "DELETE",
+
+      url: '{{ current_app.urls.student_elective_api }}' + "?scheduling_id=" + scheduling_id,
+
+      // // 声明request的类型
+      // contentType: "application/json; charset=UTF-8",
+
+      // 预期response的类型
+      dataType: "json",
+
+      // // data
+      // data: JSON.stringify({
+      //   // scheduling_id:parseInt(scheduling_id)
+      //   scheduling_id:scheduling_id
+      // }),
+      // data: {
+      //   'scheduling_id':scheduling_id
+      // },
+
+      /*
+        默认的话，traditional为false，即jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架，
+        但servelt api无法处理，我们可以通过设置traditional为true阻止深度序列化，然后序列化结果如下：
+      */
+      traditional: false,
+      // 是否异步请求
+      async: true,
+      // 允许请求携带cookie
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function (data) {
+        // 修改颜色按钮
+        if(data.error_code==0){
+          $("#post_btn_"+scheduling_id).css('display','none');
+          $("#delete_btn_"+scheduling_id).css('display','block');
+        }
+
+        console.log(data)
+        alert("操作信息："+data.error_message+"\n操作代码："+data.error_code);
+
+        // 刷新页面
+        window.location.reload()
+      }.bind(this),
+      error: function (data) {
+        data = data.responseJSON
+        console.log(data)
+        alert( "错误信息："+data.error_message + "\n错误代码：" + data.error_code);
+      }.bind(this)
+    });
+  }
+
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+
+
+
